@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using SecretSanta.Extentions;
 
 namespace SecretSanta
@@ -21,7 +18,7 @@ namespace SecretSanta
 
             foreach (var from in participants.GetShuffle().GetPermutations())
             {
-                var result = to.ZipToKV(from);
+                var result = to.ZipToKV(from).ToList();
 
                 if (PairingIsValid(bannedPairings, result))
                     return result.ToDictionary();
@@ -53,7 +50,7 @@ namespace SecretSanta
 
             foreach (var from in participants.GetShuffle().GetPermutations())
             {
-                var result = to.ZipToKV(from);
+                var result = to.ZipToKV(from).ToList();
 
                 if (PairingIsValid(bannedPairings, result))
                     yield return result.ToDictionary();

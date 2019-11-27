@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,13 +9,13 @@ namespace SecretSanta_Test
     [TestClass]
     public class SecretSantaTest
     {
-        IList<Participant> participants;
-        IDictionary<Participant, Participant> banned;
+        IList<Participant> _participants;
+        IDictionary<Participant, Participant> _banned;
 
         [TestInitialize]
         public void SetUp()
         {
-            participants = new List<Participant>()
+            _participants = new List<Participant>()
             {
                 new Participant() { FirstName = "A" },
                 new Participant() { FirstName = "B" },
@@ -24,15 +23,15 @@ namespace SecretSanta_Test
                 new Participant() { FirstName = "D" }
             };
 
-            banned = new Dictionary<Participant, Participant>();
-            banned.Add(participants[0], participants[2]);
-            banned.Add(participants[1], participants[3]);
+            _banned = new Dictionary<Participant, Participant>();
+            _banned.Add(_participants[0], _participants[2]);
+            _banned.Add(_participants[1], _participants[3]);
         }
 
         [TestMethod]
         public void SecretSanta_Generate_ReturnsASet()
         {
-            var result = SecretSantaGenerator.Generate(participants);
+            var result = SecretSantaGenerator.Generate(_participants);
 
             CheckForValidSantaList(result);
         }
@@ -41,12 +40,12 @@ namespace SecretSanta_Test
         {
             foreach (var sender in santaList.Keys)
             {
-                Assert.IsTrue(participants.Contains(sender), "A participant was not included as a gifter");
+                Assert.IsTrue(_participants.Contains(sender), "A participant was not included as a gifter");
             }
 
-            foreach (var reciever in santaList.Values)
+            foreach (var receiver in santaList.Values)
             {
-                Assert.IsTrue(participants.Contains(reciever), "A participant was not included as a giftee");
+                Assert.IsTrue(_participants.Contains(receiver), "A participant was not included as a giftee");
             }
 
             foreach (var pair in santaList)
@@ -56,9 +55,9 @@ namespace SecretSanta_Test
         }
 
         [TestMethod]
-        public void SecretSanta_GernerateAll_ReturnsAllSets()
+        public void SecretSanta_GenerateAll_ReturnsAllSets()
         {
-            foreach (var list in SecretSantaGenerator.GenerateAll(participants))
+            foreach (var list in SecretSantaGenerator.GenerateAll(_participants))
             {
                 CheckForValidSantaList(list);
             }
@@ -67,7 +66,7 @@ namespace SecretSanta_Test
         [TestMethod]
         public void SecretSanta_Generate_WithBanned_ReturnsASet()
         {
-            var result = SecretSantaGenerator.Generate(participants, banned);
+            var result = SecretSantaGenerator.Generate(_participants, _banned);
 
             CheckForValidSantaList(result);
             CheckResultHasNoBannedPair(result);
@@ -75,7 +74,9 @@ namespace SecretSanta_Test
 
         private void CheckResultHasNoBannedPair(IDictionary<Participant, Participant> result)
         {
-            foreach (var bannedPair in banned)
+            if (result == null) throw new ArgumentNullException(nameof(result));
+
+            foreach (var bannedPair in _banned)
             {
                 Assert.IsFalse(result.Contains(bannedPair));
             }
@@ -84,7 +85,7 @@ namespace SecretSanta_Test
         [TestMethod]
         public void SecretSanta_GenerateAll_WithBanned_ReturnsAllSets()
         {
-            var result = SecretSantaGenerator.GenerateAll(participants, banned);
+            var result = SecretSantaGenerator.GenerateAll(_participants, _banned);
 
             foreach (var list in result)
             {
