@@ -17,6 +17,10 @@ namespace SecretSantaConsole
             try
             {
                 Console.WriteLine("Starting...");
+
+                if (args == null || args.Length == 0)
+                    args = new[] {"Peoples.txt", "Banned.txt", "Output.txt"};
+
                 CreateSantasList(args);
                 Console.WriteLine("Complete!");
             }
@@ -65,7 +69,7 @@ namespace SecretSantaConsole
                     {
                         mail.Sender = new MailAddress(s.Key.Email, s.Key.Name);
                         mail.Subject = "Your secret santa!";
-                        mail.Body = "You, " + s.Key.Name + ", have to buy a book for " + s.Value.Name + "!";
+                        mail.Body = "You, " + s.Key.Name + ", have to buy a gift for " + s.Value.Name + "!";
 
                         smtp.Send(mail);
                     }
